@@ -104,6 +104,8 @@ footer button {
   z-index: 10;
 }
 
+#bookmarkPanel[hidden] { display: none; }
+
 .bm-header {
   display: flex;
   align-items: center;
