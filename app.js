@@ -68,7 +68,8 @@ pasteBtn.addEventListener('click', async () => {
   try {
     const text = (await navigator.clipboard.readText()).trim();
     if (!text) return;
-    loadUrl(text);
+    urlInput.value = text;
+    urlInput.focus();
   } catch (_) {
     urlInput.focus();
     alert('クリップボードにアクセスできませんでした。入力欄に直接ペーストしてください。');
@@ -129,11 +130,6 @@ bmAddBtn.addEventListener('click', () => {
   }
   renderBookmarks();
 });
-
-document.addEventListener('touchmove', (e) => {
-  if (e.target.closest('#bmList')) return;
-  e.preventDefault();
-}, { passive: false });
 
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {

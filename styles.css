@@ -15,7 +15,7 @@ body {
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  touch-action: none;
+  touch-action: pan-y;
 }
 
 header,
@@ -71,7 +71,7 @@ main {
   position: relative;
   overflow: hidden;
   background: #111;
-  touch-action: none;
+  touch-action: pan-y;
 }
 
 #viewer {
@@ -79,6 +79,7 @@ main {
   height: 100%;
   border: none;
   pointer-events: none;
+  touch-action: pan-y;
 }
 
 footer {
