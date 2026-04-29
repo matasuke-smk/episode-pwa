@@ -1,0 +1,18 @@
+{
+  "name": "話数ビューア",
+  "short_name": "話数ビューア",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#222",
+  "theme_color": "#222",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#222">
+  <title>話数ビューア</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header>
+    <form id="urlForm">
+      <input type="url" id="urlInput" placeholder="URL を入力" inputmode="url" autocomplete="off" required>
+      <button type="submit">開く</button>
+    </form>
+  </header>
+  <main>
+    <iframe id="viewer" referrerpolicy="no-referrer"></iframe>
+  </main>
+  <footer>
+    <button id="prevBtn" type="button" aria-label="前の話">←</button>
+    <button id="nextBtn" type="button" aria-label="次の話">→</button>
+  </footer>
+  <script src="app.js"></script>
+</body>
+</html>
