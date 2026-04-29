@@ -86,6 +86,7 @@ function deriveTitle(url) {
   if (segments.length >= 2) site = segments[segments.length - 2];
   else if (segments.length === 1) site = segments[0];
   else site = parsed.hostname;
+  site = site.replace(/-raw-free$/, '');
   const m = path.match(/第([\d０-９]+)話/);
   return m ? `${site} - 第${m[1]}話` : site;
 }
