@@ -130,6 +130,11 @@ bmAddBtn.addEventListener('click', () => {
   renderBookmarks();
 });
 
+document.addEventListener('touchmove', (e) => {
+  if (e.target.closest('#bmList')) return;
+  e.preventDefault();
+}, { passive: false });
+
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('sw.js').catch(() => {});
