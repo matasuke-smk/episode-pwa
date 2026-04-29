@@ -3,8 +3,16 @@ const urlInput = document.getElementById('urlInput');
 const viewer = document.getElementById('viewer');
 const prevBtn = document.getElementById('prevBtn');
 const nextBtn = document.getElementById('nextBtn');
+const pasteBtn = document.getElementById('pasteBtn');
+const bookmarkBtn = document.getElementById('bookmarkBtn');
+const bookmarkPanel = document.getElementById('bookmarkPanel');
+const bmCloseBtn = document.getElementById('bmCloseBtn');
+const bmAddBtn = document.getElementById('bmAddBtn');
+const bmList = document.getElementById('bmList');
+const bmEmpty = document.getElementById('bmEmpty');
 
 const STORAGE_KEY = 'lastUrl';
+const BOOKMARKS_KEY = 'bookmarks';
 
 function loadUrl(url) {
   if (!url) return;
@@ -40,15 +48,12 @@ function toHalfWidth(s) {
 function navigateEpisode(delta) {
   const url = urlInput.value;
   if (!url) return;
-
   for (const p of PATTERNS) {
     const m = url.match(p.regex);
     if (!m) continue;
-
     const n = parseInt(p.kind === 'fullwidth' ? toHalfWidth(m[1]) : m[1], 10);
     const next = n + delta;
     if (next < 1) return;
-
     const nextStr = p.kind === 'fullwidth' ? toFullWidth(String(next)) : String(next);
     const newUrl = url.replace(p.regex, p.prefix + nextStr + p.suffix);
     loadUrl(newUrl);
@@ -58,6 +63,72 @@ function navigateEpisode(delta) {
 
 prevBtn.addEventListener('click', () => navigateEpisode(-1));
 nextBtn.addEventListener('click', () => navigateEpisode(1));
+
+pasteBtn.addEventListener('click', async () => {
+  try {
+    const text = (await navigator.clipboard.readText()).trim();
+    if (!text) return;
+    loadUrl(text);
+  } catch (_) {
+    urlInput.focus();
+    alert('クリップボードにアクセスできませんでした。入力欄に直接ペーストしてください。');
+  }
+});
+
+function getBookmarks() {
+  try { return JSON.parse(localStorage.getItem(BOOKMARKS_KEY) || '[]'); }
+  catch { return []; }
+}
+function saveBookmarks(list) {
+  localStorage.setItem(BOOKMARKS_KEY, JSON.stringify(list));
+}
+function renderBookmarks() {
+  const list = getBookmarks();
+  bmList.innerHTML = '';
+  bmEmpty.hidden = list.length > 0;
+  for (const url of list) {
+    const li = document.createElement('li');
+    const link = document.createElement('button');
+    link.type = 'button';
+    link.className = 'bm-link';
+    link.textContent = url;
+    link.addEventListener('click', () => {
+      loadUrl(url);
+      closeBookmarks();
+    });
+    const del = document.createElement('button');
+    del.type = 'button';
+    del.className = 'bm-del';
+    del.textContent = '✕';
+    del.setAttribute('aria-label', '削除');
+    del.addEventListener('click', () => {
+      saveBookmarks(getBookmarks().filter(u => u !== url));
+      renderBookmarks();
+    });
+    li.append(link, del);
+    bmList.append(li);
+  }
+}
+function openBookmarks() {
+  renderBookmarks();
+  bookmarkPanel.hidden = false;
+}
+function closeBookmarks() {
+  bookmarkPanel.hidden = true;
+}
+
+bookmarkBtn.addEventListener('click', openBookmarks);
+bmCloseBtn.addEventListener('click', closeBookmarks);
+bmAddBtn.addEventListener('click', () => {
+  const url = urlInput.value.trim();
+  if (!url) return;
+  const list = getBookmarks();
+  if (!list.includes(url)) {
+    list.unshift(url);
+    saveBookmarks(list);
+  }
+  renderBookmarks();
+});
 
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {

@@ -12,12 +12,23 @@
 <body>
   <header>
     <form id="urlForm">
+      <button type="button" id="pasteBtn" class="icon-btn" aria-label="ペースト">📋</button>
       <input type="url" id="urlInput" placeholder="URL を入力" inputmode="url" autocomplete="off" required>
       <button type="submit">開く</button>
+      <button type="button" id="bookmarkBtn" class="icon-btn" aria-label="ブックマーク">★</button>
     </form>
   </header>
   <main>
     <iframe id="viewer" referrerpolicy="unsafe-url"></iframe>
+    <section id="bookmarkPanel" hidden>
+      <div class="bm-header">
+        <span>ブックマーク</span>
+        <button type="button" id="bmCloseBtn" class="icon-btn" aria-label="閉じる">✕</button>
+      </div>
+      <button type="button" id="bmAddBtn" class="bm-add">＋ 現在のURLを追加</button>
+      <ul id="bmList"></ul>
+      <p id="bmEmpty" class="bm-empty">ブックマークはまだありません</p>
+    </section>
   </main>
   <footer>
     <button id="prevBtn" type="button" aria-label="前の話">←</button>
