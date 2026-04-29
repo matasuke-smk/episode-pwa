@@ -1,4 +1,4 @@
-const CACHE = 'episode-pwa-v1';
+const CACHE = 'episode-pwa-v2';
 const ASSETS = [
   './',
   'index.html',
