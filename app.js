@@ -76,9 +76,27 @@ pasteBtn.addEventListener('click', async () => {
   }
 });
 
+function deriveTitle(url) {
+  let parsed;
+  try { parsed = new URL(url); } catch { return url; }
+  let path = parsed.pathname;
+  try { path = decodeURIComponent(path); } catch {}
+  const segments = path.split('/').filter(Boolean);
+  let site;
+  if (segments.length >= 2) site = segments[segments.length - 2];
+  else if (segments.length === 1) site = segments[0];
+  else site = parsed.hostname;
+  const m = path.match(/第([\d０-９]+)話/);
+  return m ? `${site} - 第${m[1]}話` : site;
+}
+
 function getBookmarks() {
-  try { return JSON.parse(localStorage.getItem(BOOKMARKS_KEY) || '[]'); }
-  catch { return []; }
+  try {
+    const raw = JSON.parse(localStorage.getItem(BOOKMARKS_KEY) || '[]');
+    return raw.map(item =>
+      typeof item === 'string' ? { title: deriveTitle(item), url: item } : item
+    );
+  } catch { return []; }
 }
 function saveBookmarks(list) {
   localStorage.setItem(BOOKMARKS_KEY, JSON.stringify(list));
@@ -87,14 +105,14 @@ function renderBookmarks() {
   const list = getBookmarks();
   bmList.innerHTML = '';
   bmEmpty.hidden = list.length > 0;
-  for (const url of list) {
+  for (const bm of list) {
     const li = document.createElement('li');
     const link = document.createElement('button');
     link.type = 'button';
     link.className = 'bm-link';
-    link.textContent = url;
+    link.textContent = bm.title;
     link.addEventListener('click', () => {
-      loadUrl(url);
+      loadUrl(bm.url);
       closeBookmarks();
     });
     const del = document.createElement('button');
@@ -103,7 +121,7 @@ function renderBookmarks() {
     del.textContent = '✕';
     del.setAttribute('aria-label', '削除');
     del.addEventListener('click', () => {
-      saveBookmarks(getBookmarks().filter(u => u !== url));
+      saveBookmarks(getBookmarks().filter(b => b.url !== bm.url));
       renderBookmarks();
     });
     li.append(link, del);
@@ -124,8 +142,8 @@ bmAddBtn.addEventListener('click', () => {
   const url = urlInput.value.trim();
   if (!url) return;
   const list = getBookmarks();
-  if (!list.includes(url)) {
-    list.unshift(url);
+  if (!list.some(b => b.url === url)) {
+    list.unshift({ title: deriveTitle(url), url });
     saveBookmarks(list);
   }
   renderBookmarks();
