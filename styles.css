@@ -93,6 +93,12 @@ footer button {
   padding: 14px 0;
 }
 
+footer button.step-dec {
+  flex: 0 0 auto;
+  font-size: 15px;
+  padding: 14px 12px;
+}
+
 #bookmarkPanel {
   position: absolute;
   inset: 0;
